@@ -11,5 +11,7 @@
 !README*
 !webpack.config.js
 
+!exercise1.md
+
 dist/
 node_modules/
