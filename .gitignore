@@ -1,2 +1,15 @@
+*.*
+
+!*.js
+!*.jsx
+!*.html
+!.babelrc
+!.eslintignore
+!.eslintrc.js
+!.gitignore
+!package*
+!README*
+!webpack.config.js
+
 dist/
 node_modules/
