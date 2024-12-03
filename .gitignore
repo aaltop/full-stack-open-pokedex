@@ -13,5 +13,10 @@
 
 !exercise1.md
 
+# need to first unignore the .github directory (ignored by *.* originally),
+# because content inside ignored directories is not looked at at all.
+!.github/
+!.github/**/*.yml
+
 dist/
 node_modules/
