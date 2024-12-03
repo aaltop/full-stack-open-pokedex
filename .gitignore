@@ -1,8 +1,15 @@
 *.*
 
-!*.js
-!*.jsx
-!*.html
+!src/**/*.js
+!src/**/*.jsx
+!src/**/*.css
+
+!test/**/*.jsx
+
+!e2e/**/*.js
+
+!public/**/*.html
+
 !.babelrc
 !.eslintignore
 !.eslintrc.js
@@ -10,6 +17,7 @@
 !package*
 !README*
 !webpack.config.js
+!playwright.config.js
 
 !exercise1.md
 
