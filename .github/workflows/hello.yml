@@ -8,3 +8,7 @@ jobs:
         name: Greet the World
         steps:
             - run: echo "Hello World!"
+            - name: Current Date
+              run: date
+            - name: Directory Contents
+              run: ls -l
