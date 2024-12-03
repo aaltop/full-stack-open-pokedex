@@ -4,7 +4,7 @@ on: push
 
 jobs:
     hello_world:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-20.04
         name: Greet the World
         steps:
             - run: echo "Hello World!"
