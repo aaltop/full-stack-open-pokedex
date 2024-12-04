@@ -5,20 +5,14 @@ on:
     branches:
       - main
 
-env:
-    RUNNER: ubuntu-20.04
-    NODE_VERSION: '20'
-    CHECKOUT: actions/checkout@v4
-    SETUP_NODE: actions/setup-node@v4
-
 jobs:
   simple_deployment_pipeline:
-    runs-on: $RUNNER
+    runs-on: ${{ vars.RUNNER }}
     steps:
-      - uses: $CHECKOUT
-      - uses: $SETUP_NODE
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: NODE_VERSION
+          node-version: ${{ vars.NODE_VERSION }}
       - name: Install dependencies 
         run: npm install  
       - name: Check style
