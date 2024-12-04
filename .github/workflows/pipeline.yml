@@ -36,7 +36,7 @@ jobs:
     needs: simple_deployment_pipeline
     # only deploy if the above checks pass
     if: ${{ success() }}
-    runs-on: $RUNNER
+    runs-on: ${{ vars.RUNNER }}
     steps:
       - name: Deploy to Render
         env:
