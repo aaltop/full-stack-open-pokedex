@@ -11,6 +11,9 @@ on:
       - opened
       - synchronize
 
+env:
+    SKIP_DEPLOY: ${{ github.event_name != 'push' || contains(join(github.event.commits.*.message), '#skip') }}
+
 jobs:
   simple_deployment_pipeline:
     runs-on: ${{ vars.RUNNER }}
@@ -40,8 +43,10 @@ jobs:
         run: npm run build
   bump_version_tag:
     needs: simple_deployment_pipeline
-    # only deploy if the above checks pass and is a push
-    if: ${{ success() && github.event_name == 'push' }}
+    # If we're not deploying (and saying so from a commit message),
+    # we presumably aren't pushing a new version yet either, so no
+    # point in tagging
+    if: ${{ success() && github.env.SKIP_DEPLOY }}
     runs-on: ${{ vars.RUNNER }}
     permissions:
       contents: write
@@ -60,8 +65,7 @@ jobs:
     # succeed, but it's nice to have the repo in a "consistent"
     # state before deployment
     needs: [simple_deployment_pipeline, bump_version_tag]
-    # only deploy if the above checks pass and is a push
-    if: ${{ success() && github.event_name == 'push' }}
+    if: ${{ success() && github.env.SKIP_DEPLOY }}
     runs-on: ${{ vars.RUNNER }}
     steps:
       - name: Deploy to Render
