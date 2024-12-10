@@ -43,7 +43,12 @@ jobs:
     # only deploy if the above checks pass and is a push
     if: ${{ success() && github.event_name == 'push' }}
     runs-on: ${{ vars.RUNNER }}
+    permissions:
+      contents: write
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: '0'
       - name: Bump version tag
         uses: anothrNick/github-tag-action@1.71.0
         env:
