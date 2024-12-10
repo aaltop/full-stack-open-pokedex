@@ -4,6 +4,12 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
 
 jobs:
   simple_deployment_pipeline:
@@ -34,8 +40,8 @@ jobs:
         run: npm run build
   deploy_to_render:
     needs: simple_deployment_pipeline
-    # only deploy if the above checks pass
-    if: ${{ success() }}
+    # only deploy if the above checks pass and is a push
+    if: ${{ success() && github.event_name == 'push' }}
     runs-on: ${{ vars.RUNNER }}
     steps:
       - name: Deploy to Render
