@@ -38,8 +38,23 @@ jobs:
           retention-days: 30
       - name: Build
         run: npm run build
-  deploy_to_render:
+  bump_version_tag:
     needs: simple_deployment_pipeline
+    # only deploy if the above checks pass and is a push
+    if: ${{ success() && github.event_name == 'push' }}
+    runs-on: ${{ vars.RUNNER }}
+    steps:
+      - name: Bump version tag
+        uses: anothrNick/github-tag-action@1.71.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: patch
+      
+  deploy_to_render:
+    # probably not particularly necessary to have the tagging
+    # succeed, but it's nice to have the repo in a "consistent"
+    # state before deployment
+    needs: [simple_deployment_pipeline, bump_version_tag]
     # only deploy if the above checks pass and is a push
     if: ${{ success() && github.event_name == 'push' }}
     runs-on: ${{ vars.RUNNER }}
