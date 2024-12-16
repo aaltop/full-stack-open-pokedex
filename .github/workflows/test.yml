@@ -3,17 +3,17 @@ name: Testing
 on: push
 
 env:
-  DUMMY_TRUE: ${{ true }}
+  DUMMY_FALSE: ${{ false }}
   TEST_VAR: ${{ contains(join(github.event.commits.*.message), '#skip') }}
 
 jobs:
   set-env:
     runs-on: ${{ vars.RUNNER }}
     outputs:
-      dummyTrue: ${{ steps.step01.outputs.dummyTrue}}
+      dummyFalse: ${{ steps.step01.outputs.dummyFalse}}
     steps:
       - id: step01
-        run: echo "dummyTrue=${{ env.DUMMY_TRUE }}" >> $GITHUB_OUTPUT
+        run: echo "dummyFalse=${{ env.DUMMY_FALSE }}" >> $GITHUB_OUTPUT
 
 
   test:
@@ -27,7 +27,7 @@ jobs:
     runs-on: ${{ vars.RUNNER }}
     needs: [set-env, test]
 
-    if: ${{ success() && needs.set-env.outputs.dummyTrue }}
+    if: ${{ success() && !needs.set-env.outputs.dummyFalse }}
     steps:
       - run: echo "Should be run"
 
@@ -36,5 +36,5 @@ jobs:
     steps:
       - if: ${{ env.TEST_VAR }}
         run: echo "contained skip"
-      - if: ${{ env.DUMMY_TRUE }}
+      - if: ${{ !env.DUMMY_FALSE }}
         run: echo "always run"
