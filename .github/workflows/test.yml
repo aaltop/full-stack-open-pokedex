@@ -27,7 +27,7 @@ jobs:
     runs-on: ${{ vars.RUNNER }}
     needs: [set-env, test]
 
-    if: ${{ success() && (needs.set-env.outputs.dummyFalse == false) }}
+    if: ${{ success() && (needs.set-env.outputs.dummyFalse == 'false') }}
     steps:
       - run: echo "Should be run"
 
