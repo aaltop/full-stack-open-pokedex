@@ -7,6 +7,15 @@ env:
   TEST_VAR: ${{ contains(join(github.event.commits.*.message), '#skip') }}
 
 jobs:
+  set-env:
+    runs-on: ${{ vars.RUNNER }}
+    outputs:
+      dummyTrue: ${{ steps.step01.outputs.dummyTrue}}
+    steps:
+      - id: step01
+        run: echo "dummyTrue=${{ env.DUMMY_TRUE }}" >> $GITHUB_OUTPUT
+
+
   test:
     runs-on: ${{ vars.RUNNER }}
     steps:
@@ -16,7 +25,9 @@ jobs:
         run: echo "skip deploy $TEST_VAR"
   not-skipped-test:
     runs-on: ${{ vars.RUNNER }}
-    if: ${{ github.env.DUMMY_TRUE }}
+    needs: set-env
+
+    if: ${{ needs.set-env.outputs.dummyTrue }}
     steps:
       - run: echo "Should be run"
 
