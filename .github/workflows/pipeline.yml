@@ -15,6 +15,20 @@ env:
     SKIP_DEPLOY: ${{ github.event_name != 'push' || contains(join(github.event.commits.*.message), '#skip') }}
 
 jobs:
+  # this is seemingly required because the env variables cannot be used
+  # in the top-level if conditionals. The original suggested approach
+  # was to use github.env, but this does not seem to be magically
+  # filled with the "env" from here, as the suggestion would seem to
+  # imply. (Also nothing very clear as to how to configure github.env anyway
+  # in the documentation.)
+  set-env:
+    runs-on: ${{ vars.RUNNER }}
+    outputs:
+      skipDeploy: ${{ steps.step01.outputs.skipDeploy }}
+    steps:
+      - id: step01
+        run: echo "skipDeploy=${{ env.SKIP_DEPLOY }}" >> $GITHUB_OUTPUT
+
   simple_deployment_pipeline:
     runs-on: ${{ vars.RUNNER }}
     steps:
@@ -42,11 +56,11 @@ jobs:
       - name: Build
         run: npm run build
   bump_version_tag:
-    needs: simple_deployment_pipeline
+    needs: [set-env, simple_deployment_pipeline]
     # If we're not deploying (and saying so from a commit message),
     # we presumably aren't pushing a new version yet either, so no
     # point in tagging
-    if: ${{ success() && github.env.SKIP_DEPLOY }}
+    if: ${{ success() && !needs.set-env.outputs.skipDeploy }}
     runs-on: ${{ vars.RUNNER }}
     permissions:
       contents: write
@@ -64,8 +78,8 @@ jobs:
     # probably not particularly necessary to have the tagging
     # succeed, but it's nice to have the repo in a "consistent"
     # state before deployment
-    needs: [simple_deployment_pipeline, bump_version_tag]
-    if: ${{ success() && github.env.SKIP_DEPLOY }}
+    needs: [set-env, simple_deployment_pipeline, bump_version_tag]
+    if: ${{ success() && !needs.set-env.outputs.skipDeploy }}
     runs-on: ${{ vars.RUNNER }}
     steps:
       - name: Deploy to Render
