@@ -10,7 +10,7 @@ jobs:
   set-env:
     runs-on: ${{ vars.RUNNER }}
     outputs:
-      dummyFalse: ${{ steps.step01.outputs.dummyFalse}}
+      dummyFalse: ${{ steps.step01.outputs.dummyFalse }}
     steps:
       - id: step01
         run: echo "dummyFalse=${{ env.DUMMY_FALSE }}" >> $GITHUB_OUTPUT
@@ -27,7 +27,7 @@ jobs:
     runs-on: ${{ vars.RUNNER }}
     needs: [set-env, test]
 
-    if: ${{ success() && needs.set-env.outputs.dummyFalse == false }}
+    if: ${{ success() && (needs.set-env.outputs.dummyFalse == false) }}
     steps:
       - run: echo "Should be run"
 
