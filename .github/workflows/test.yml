@@ -25,9 +25,9 @@ jobs:
         run: echo "skip deploy $TEST_VAR"
   not-skipped-test:
     runs-on: ${{ vars.RUNNER }}
-    needs: set-env
+    needs: [set-env, test]
 
-    if: ${{ needs.set-env.outputs.dummyTrue }}
+    if: ${{ success() && needs.set-env.outputs.dummyTrue }}
     steps:
       - run: echo "Should be run"
 
