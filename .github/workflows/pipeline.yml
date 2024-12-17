@@ -57,11 +57,10 @@ jobs:
         run: npm run build
       - name: Notify of failure
         if: failure()
-        uses: rjstone/discord-webhook-notify@89b0bf43c2c8514f70d0dcba4a706b904e8a3112
+        uses: tsickert/discord-webhook@v6.0.0
         with:
-          severity: error
-          description: 'Build failed for $GITHUB_SHA'
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          content: 'Build failed for $GITHUB_SHA'
+          webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
 
   bump_version_tag:
     needs: [set-env, simple_deployment_pipeline]
@@ -96,8 +95,7 @@ jobs:
         run: curl "$deploy_url"
       - name: Notify of success
         if: success()
-        uses: rjstone/discord-webhook-notify@89b0bf43c2c8514f70d0dcba4a706b904e8a3112
+        uses: tsickert/discord-webhook@v6.0.0
         with:
-          severity: info
-          description: Deploy succeeded
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          content: Deploy succeeded
+          webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
