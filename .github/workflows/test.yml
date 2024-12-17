@@ -1,40 +1,13 @@
 name: Testing
 
-on: push
-
-env:
-  DUMMY_FALSE: ${{ false }}
-  TEST_VAR: ${{ contains(join(github.event.commits.*.message), '#skip') }}
+on: workflow_dispatch
 
 jobs:
-  set-env:
-    runs-on: ${{ vars.RUNNER }}
-    outputs:
-      dummyFalse: ${{ steps.step01.outputs.dummyFalse }}
-    steps:
-      - id: step01
-        run: echo "dummyFalse=${{ env.DUMMY_FALSE }}" >> $GITHUB_OUTPUT
-
-
-  test:
-    runs-on: ${{ vars.RUNNER }}
-    steps:
-      - name: test
-        run: echo "testing"
-      - name: env
-        run: echo "skip deploy $TEST_VAR"
-  not-skipped-test:
-    runs-on: ${{ vars.RUNNER }}
-    needs: [set-env, test]
-
-    if: ${{ success() && (needs.set-env.outputs.dummyFalse == 'false') }}
-    steps:
-      - run: echo "Should be run"
-
-  test-contains:
-    runs-on: ${{ vars.RUNNER }}
-    steps:
-      - if: ${{ env.TEST_VAR }}
-        run: echo "contained skip"
-      - if: ${{ !env.DUMMY_FALSE }}
-        run: echo "always run"
+    message:
+      runs-on: ubuntu-latest
+      steps:
+      - name: Discord Webhook Action
+        uses: tsickert/discord-webhook@v6.0.0
+        with:
+          webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
+          content: "Testing"
