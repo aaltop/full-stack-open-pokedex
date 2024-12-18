@@ -11,10 +11,10 @@ jobs:
     env:
       SERVER_URL: ${{ vars.SERVER_URL }}
     steps:
-      - run: echo 'pinging ${SERVER_URL}/health'
+      - run: echo "pinging ${{ env.SERVER_URL }}/health"
       - name: Check the deployed service URL
         uses: jtalk/url-health-check-action@v4
         with:
-          url: '${SERVER_URL}/health'
+          url: "${{ env.SERVER_URL }}/health"
           max-attempts: 3
           retry-delay: 5s
